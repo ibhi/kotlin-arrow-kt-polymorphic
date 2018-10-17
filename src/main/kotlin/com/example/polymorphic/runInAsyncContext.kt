@@ -1,7 +1,8 @@
 package com.example.polymorphic
 
 import arrow.Kind
-import arrow.core.Try
+import arrow.core.left
+import arrow.core.right
 import arrow.effects.typeclasses.Async
 
 fun <F, A> runInAsyncContext(
@@ -10,8 +11,10 @@ fun <F, A> runInAsyncContext(
 ): Kind<F, A> {
     return AC.async { callback ->
 //        something async will happen here
-        callback(Try {
-            f()
-        }.toEither())
+        try {
+            callback(f().right())
+        } catch (e: Exception) {
+            callback(e.left())
+        }
     }
 }

@@ -1,8 +1,6 @@
 package com.example.polymorphic
 
-import arrow.effects.IO
-import arrow.effects.async
-import arrow.effects.fix
+import arrow.effects.*
 import arrow.effects.typeclasses.Duration
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,6 +20,20 @@ class ClientTest {
         val result = client.getResponse("123")
                 .fix()
                 .attempt()
+                .unsafeRunSync()
+//                .unsafeRunTimed(Duration(1000, TimeUnit.MILLISECONDS))
+
+        println("Success $result")
+    }
+
+    @Test
+    fun getResponseWithDeferredKTest() {
+        val sessionService = SessionService(DeferredK.async())
+        val accountService = AccountService(DeferredK.async())
+        val client = Client(sessionService, accountService, DeferredK.async())
+
+        val result = client.getResponse("123")
+                .fix()
                 .unsafeRunSync()
 //                .unsafeRunTimed(Duration(1000, TimeUnit.MILLISECONDS))
 

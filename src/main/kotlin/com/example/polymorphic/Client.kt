@@ -10,12 +10,10 @@ class Client<F>(
         val accountService: AccountService<F>,
         A: Async<F>
 ): Async<F> by A {
-    fun getResponse(userId: String): Kind<F, Response> = async {
+    fun getResponse(userId: String): Kind<F, Response> =
         bindingCatch {
             val session = sessionService.createSession(userId).bind()
             val accounts = accountService.getAccounts(userId).bind()
             Response(session, accounts)
         }
-    }
-
 }

@@ -12,7 +12,8 @@ fun <F, A> runInAsyncContext(
     return AC.async { callback ->
 //        something async will happen here
         try {
-            callback(f().right())
+            val result = f()
+            callback(result.right())
         } catch (e: Exception) {
             callback(e.left())
         }
